@@ -4,8 +4,6 @@ import 'package:flutter_application_appdate2/Service/auth_service.dart';
 import 'package:provider/provider.dart';
 import '../view_models/registro_view_model.dart';
 
-
-
 class PaginaRegistro extends StatelessWidget {
   const PaginaRegistro({super.key});
 
@@ -16,61 +14,49 @@ class PaginaRegistro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => RegistroViewModel(AuthService()),
+      create: (context) => RegistroViewModel(context.read<AuthService>()),
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () => _regresarALogin(context),
           ),
-          title: Text('Crear Cuenta'),
+          title: const Text('Crear Cuenta'),
         ),
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24),
             child: Column(
               children: [
-                SizedBox(height: 20),
-                
-                // Logo
-                Icon(
+                const SizedBox(height: 20),
+                const Icon(
                   Icons.calendar_today,
                   size: 60,
                   color: Colors.blue,
                 ),
-                
-                SizedBox(height: 16),
-                
-                // Título
-                Text(
+                const SizedBox(height: 16),
+                const Text(
                   'Crear Nueva Cuenta',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                
-                SizedBox(height: 8),
-                
-                // Instrucciones
-                Text(
+                const SizedBox(height: 8),
+                const Text(
                   'Completa tus datos para registrarte',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
                   ),
                 ),
-                
-                SizedBox(height: 32),
-                
-                // Formulario de registro
+                const SizedBox(height: 32),
                 Consumer<RegistroViewModel>(
                   builder: (context, viewModel, child) {
-                    // Si el registro fue exitoso, regresar al login
                     if (viewModel.usuario != null) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
+                          const SnackBar(
                             content: Text('Registro exitoso. Ahora puedes iniciar sesión.'),
                             backgroundColor: Colors.green,
                           ),

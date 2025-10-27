@@ -18,7 +18,6 @@ class PaginaInicio extends StatelessWidget {
       return _buildSinUsuario();
     }
 
-    // Según el tipo de usuario, mostrar dashboard correspondiente
     if (usuario.esCliente) {
       return DashboardCliente(usuario: usuario);
     } else if (usuario.esProveedor) {

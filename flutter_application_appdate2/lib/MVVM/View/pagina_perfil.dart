@@ -49,7 +49,6 @@ class PaginaPerfil extends StatelessWidget {
     );
   }
 
-// ... código anterior ...
 
 Widget _buildConUsuario(BuildContext context, Usuario usuario) {
   return Consumer<PerfilViewModel>(
@@ -75,7 +74,7 @@ Widget _buildConUsuario(BuildContext context, Usuario usuario) {
                     const SizedBox(height: 16),
                     
                     FormularioPerfil(
-                      usuario: usuario, //  Ahora usuario es de tipo Usuario
+                      usuario: usuario, 
                       alActualizarPerfil: viewModel.actualizarPerfil,
                       cargando: viewModel.cargando,
                       error: viewModel.error,

@@ -7,7 +7,6 @@ import 'pagina_registro.dart';
 import 'pagina_recuperar.dart';
 import 'package:flutter_application_appdate2/MVVM/View_Models/formulario_login.dart';
 
-
 class PaginaLogin extends StatelessWidget {
   const PaginaLogin({super.key});
 
@@ -27,12 +26,8 @@ class PaginaLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) {
-        final authService = AuthService();
-        // ✅ authService ya llama _agregarUsuariosPrueba() en su constructor
-        return LoginViewModel(authService);
-      },
+   return ChangeNotifierProvider(
+      create: (context) => LoginViewModel(context.read<AuthService>()),
       child: Scaffold(
         body: SafeArea(
           child: SingleChildScrollView(
@@ -40,17 +35,12 @@ class PaginaLogin extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 40),
-                
-                // Logo de la aplicación
                 const Icon(
                   Icons.calendar_today,
                   size: 80,
                   color: Colors.blue,
                 ),
-                
                 const SizedBox(height: 16),
-                
-                // Título de la aplicación
                 const Text(
                   'Citas Multi-Servicios',
                   style: TextStyle(
@@ -58,10 +48,7 @@ class PaginaLogin extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                
                 const SizedBox(height: 8),
-                
-                // Subtítulo
                 const Text(
                   'Gestiona tus citas fácilmente',
                   style: TextStyle(
@@ -69,22 +56,11 @@ class PaginaLogin extends StatelessWidget {
                     color: Colors.grey,
                   ),
                 ),
-                
                 const SizedBox(height: 40),
-                
-                // Formulario de login
                 Consumer<LoginViewModel>(
                   builder: (context, viewModel, child) {
-                    // Si el login fue exitoso, navegar al dashboard
-                    if (viewModel.usuario != null) {
+                   if (viewModel.usuario != null) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Bienvenido ${viewModel.usuario!.nombre}'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                        
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => const PaginaInicio()),
@@ -93,22 +69,20 @@ class PaginaLogin extends StatelessWidget {
                     }
                     
                     return FormularioLogin(
-                      alIniciarSesion: viewModel.iniciarSesion,
+                     alIniciarSesion: (correo, pass) async {
+                         await viewModel.iniciarSesion(correo, pass);
+                         // No necesitamos retornar bool aquí. El estado del ViewModel lo controla todo.
+                      },
                       cargando: viewModel.cargando,
                       error: viewModel.error,
                     );
                   },
                 ),
-                
                 const SizedBox(height: 24),
-                
-                // Enlace para recuperar contraseña
                 TextButton(
                   onPressed: () => _navegarARecuperar(context),
                   child: const Text('¿Olvidaste tu contraseña?'),
                 ),
-                
-                // Enlace para registrarse
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

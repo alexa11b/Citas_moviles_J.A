@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_appdate2/Service/validadores.dart';
+
+typedef IniciarSesionCallback = Future<void> Function(String, String);
 
 class FormularioLogin extends StatefulWidget {
-  final Future<bool> Function(String, String) alIniciarSesion;
+  final IniciarSesionCallback alIniciarSesion;
   final bool cargando;
   final String? error;
 
@@ -32,33 +35,8 @@ class _FormularioLoginState extends State<FormularioLogin> {
     if (_formKey.currentState!.validate()) {
       final correo = _controladorCorreo.text.trim();
       final pass = _controladorContrasena.text;
-      final success = await widget.alIniciarSesion(correo, pass);
-      if (!success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(widget.error ?? 'Error al iniciar sesión')),
-        );
-      }
+      await widget.alIniciarSesion(correo, pass);
     }
-  }
-
-  String? _validarCorreo(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'El correo electrónico es requerido';
-    }
-    if (!value.contains('@')) {
-      return 'Introduce un correo válido';
-    }
-    return null;
-  }
-
-  String? _validarContrasena(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'La contraseña es requerida';
-    }
-    if (value.length < 4) {
-      return 'La contraseña es muy corta';
-    }
-    return null;
   }
 
   @override
@@ -74,7 +52,7 @@ class _FormularioLoginState extends State<FormularioLogin> {
               prefixIcon: Icon(Icons.email),
               border: OutlineInputBorder(),
             ),
-            validator: _validarCorreo,
+            validator: Validadores.validarCorreo,
             keyboardType: TextInputType.emailAddress,
           ),
           const SizedBox(height: 16),
@@ -86,7 +64,7 @@ class _FormularioLoginState extends State<FormularioLogin> {
               border: OutlineInputBorder(),
             ),
             obscureText: true,
-            validator: _validarContrasena,
+              validator: Validadores.validarContrasena,
           ),
           const SizedBox(height: 24),
           if (widget.error != null)

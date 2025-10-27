@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_appdate2/Service/validadores.dart';
+
+typedef RegistrarCallback = Future<void> Function(
+    String nombre, String correo, String telefono, String contrasena);
 
 class FormularioRegistro extends StatefulWidget {
-  final Function(String, String, String, String) alRegistrar;
+  final RegistrarCallback alRegistrar;
   final bool cargando;
   final String? error;
 
@@ -45,49 +49,12 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
     }
   }
 
-  String? _validarNombre(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'El nombre es requerido';
-    }
-    return null;
-  }
-
-  String? _validarCorreo(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'El correo electrónico es requerido';
-    }
-    
-    final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!regex.hasMatch(value)) {
-      return 'Ingrese un correo electrónico válido';
-    }
-    
-    return null;
-  }
-
-  String? _validarTelefono(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'El teléfono es requerido';
-    }
-    return null;
-  }
-
-  String? _validarContrasena(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'La contraseña es requerida';
-    }
-    if (value.length < 6) {
-      return 'La contraseña debe tener al menos 6 caracteres';
-    }
-    return null;
-  }
-
   String? _validarConfirmarContrasena(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Confirma tu contraseña';
+      return 'Confirma tu contraseña.';
     }
     if (value != _controladorContrasena.text) {
-      return 'Las contraseñas no coinciden';
+      return 'Las contraseñas no coinciden.';
     }
     return null;
   }
@@ -98,7 +65,6 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
       key: _formKey,
       child: Column(
         children: [
-          // Campo de nombre
           TextFormField(
             controller: _controladorNombre,
             decoration: const InputDecoration(
@@ -106,12 +72,9 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
               prefixIcon: Icon(Icons.person),
               border: OutlineInputBorder(),
             ),
-            validator: _validarNombre,
+            validator: Validadores.validarNombre,
           ),
-          
           const SizedBox(height: 16),
-          
-          // Campo de correo
           TextFormField(
             controller: _controladorCorreo,
             decoration: const InputDecoration(
@@ -120,12 +83,9 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
               border: OutlineInputBorder(),
             ),
             keyboardType: TextInputType.emailAddress,
-            validator: _validarCorreo,
+            validator: Validadores.validarCorreo,
           ),
-          
           const SizedBox(height: 16),
-          
-          // Campo de teléfono
           TextFormField(
             controller: _controladorTelefono,
             decoration: const InputDecoration(
@@ -134,12 +94,14 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
               border: OutlineInputBorder(),
             ),
             keyboardType: TextInputType.phone,
-            validator: _validarTelefono,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'El teléfono es requerido.';
+              }
+              return null;
+            },
           ),
-          
           const SizedBox(height: 16),
-          
-          // Campo de contraseña
           TextFormField(
             controller: _controladorContrasena,
             decoration: const InputDecoration(
@@ -148,12 +110,9 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
               border: OutlineInputBorder(),
             ),
             obscureText: true,
-            validator: _validarContrasena,
+            validator: Validadores.validarContrasena,
           ),
-          
           const SizedBox(height: 16),
-          
-          // Campo de confirmar contraseña
           TextFormField(
             controller: _controladorConfirmarContrasena,
             decoration: const InputDecoration(
@@ -164,46 +123,20 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
             obscureText: true,
             validator: _validarConfirmarContrasena,
           ),
-          
           const SizedBox(height: 24),
-          
-          // Mostrar error si existe
           if (widget.error != null)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.red[50],
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red),
-              ),
-              child: Text(
-                widget.error!,
-                style: const TextStyle(color: Colors.red),
-              ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Text(widget.error!, style: const TextStyle(color: Colors.red)),
             ),
-          
-          if (widget.error != null) const SizedBox(height: 16),
-          
-          // Botón de registro
           SizedBox(
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
               onPressed: widget.cargando ? null : _enviarFormulario,
               child: widget.cargando
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : const Text(
-                      'REGISTRARSE',
-                      style: TextStyle(fontSize: 16),
-                    ),
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text('REGISTRARSE'),
             ),
           ),
         ],

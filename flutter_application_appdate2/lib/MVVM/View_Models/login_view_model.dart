@@ -20,30 +20,21 @@ class LoginViewModel with ChangeNotifier {
     _error = null;
     notifyListeners();
 
-     await Future.delayed(const Duration(seconds: 2));
-
     try {
-      final buscado = correo.trim().toLowerCase();
-      var usuarios;
-      final usuario = usuarios.firstWhere(
-        (u) => u.correo.trim().toLowerCase() == buscado,
-        orElse: () => throw Exception('Usuario no encontrado'),
-      );
-
-      // Cambiado de password a pasword para que coincida con el modelo
-      if (usuario.pasword != contrasena) {
-        throw Exception('Contraseña incorrecta');
-      }
-
-      var usuarioActual = usuario;
+      final usuarioLogueado = await _authService.login(correo, contrasena);
+      _usuario = usuarioLogueado;
+      
+      
+      _cargando = false;
       notifyListeners();
-      return usuario;
+      return true;
+
     } catch (e) {
       _error = e.toString().replaceAll('Exception: ', '');
       _usuario = null;
       _cargando = false;
       notifyListeners();
-      return false;
+      return false; 
     }
   }
 

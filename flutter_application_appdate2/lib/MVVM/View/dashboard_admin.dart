@@ -15,7 +15,7 @@ class DashboardAdmin extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Panel Administrador'),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blue,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -27,90 +27,115 @@ class DashboardAdmin extends StatelessWidget {
       ),
       drawer: Drawer(
         child: ListView(
+          padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
               accountName: Text(usuario.nombre),
               accountEmail: Text(usuario.correo),
+              decoration: const BoxDecoration(color: Colors.blue),
               currentAccountPicture: const CircleAvatar(
                 backgroundColor: Colors.white,
-                child: Icon(Icons.admin_panel_settings, color: Colors.red),
+                child: Icon(Icons.admin_panel_settings, color: Colors.blue, size: 40),
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.dashboard),
+              leading: const Icon(Icons.dashboard, color: Colors.blue),
               title: const Text('Dashboard'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.store),
-              title: const Text('Gestionar Tiendas'),
-              onTap: () {
-                // Navegar a gestión de tiendas
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.people),
-              title: const Text('Gestionar Usuarios'),
-              onTap: () {
-                // Navegar a gestión de usuarios
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Configuración Sistema'),
-              onTap: () {
-                // Navegar a configuración
-              },
+              onTap: () => Navigator.pop(context),
             ),
             const Divider(),
             ListTile(
-              leading: const Icon(Icons.logout),
+              leading: const Icon(Icons.people),
+              title: const Text('Gestionar Usuarios'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.store),
+              title: const Text('Gestionar Proveedores'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Configuración'),
+              onTap: () {},
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.redAccent),
               title: const Text('Cerrar Sesión'),
-              onTap: () {
-                authService.cerrarSesion();
-              },
+              onTap: () => authService.cerrarSesion(),
             ),
           ],
         ),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.admin_panel_settings, size: 80, color: Colors.red),
-            const SizedBox(height: 20),
-            Text(
-              '¡Bienvenido ${usuario.nombre}!',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Panel de Administración',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-            const SizedBox(height: 30),
-            const Card(
-              margin: EdgeInsets.all(20),
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Text(
-                      'Funciones de Administrador',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 15),
-                    Text('• Gestionar todas las tiendas'),
-                    Text('• Configurar horarios del sistema'),
-                    Text('• Administrar usuarios'),
-                    Text('• Configuración general'),
-                  ],
-                ),
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.admin_panel_settings, size: 80, color: Colors.blue[700]),
+              const SizedBox(height: 20),
+              Text(
+                '¡Bienvenido, ${usuario.nombre}!',
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              const Text(
+                'Panel de Administración',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
+              _buildActionButton(
+                context: context,
+                icon: Icons.people_alt,
+                label: 'Gestionar Usuarios',
+                onPressed: () {},
+              ),
+              const SizedBox(height: 12),
+              _buildActionButton(
+                context: context,
+                icon: Icons.store,
+                label: 'Gestionar Proveedores',
+                onPressed: () {},
+              ),
+              const SizedBox(height: 12),
+              _buildActionButton(
+                context: context,
+                icon: Icons.settings,
+                label: 'Configuración del Sistema',
+                onPressed: () {},
+                isSecondary: true,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+    bool isSecondary = false,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        icon: Icon(icon),
+        label: Text(label),
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSecondary ? Colors.grey[200] : Colors.blue,
+          foregroundColor: isSecondary ? Colors.blue : Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
       ),
     );

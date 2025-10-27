@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_appdate2/MVVM/Models/servicio.dart';
+import 'package:flutter_application_appdate2/MVVM/View/pagina_detalle_servicio.dart';
 
 
 class TarjetaServicio extends StatelessWidget {
@@ -48,10 +49,13 @@ class TarjetaServicio extends StatelessWidget {
               )
             : const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: () {
-          if (esProveedor) {
-            // Editar servicio
-          } else {
-            // Ver detalles del servicio
+          if (!esProveedor) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PaginaDetalleServicio(servicio: servicio),
+              ),
+            );
           }
         },
       ),

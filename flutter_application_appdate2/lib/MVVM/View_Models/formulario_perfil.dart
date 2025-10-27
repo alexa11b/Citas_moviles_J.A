@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_appdate2/MVVM/Models/perfil.dart';
 import 'package:flutter_application_appdate2/MVVM/Models/usuario.dart';
+import 'package:flutter_application_appdate2/Service/validadores.dart';
+
 
 class FormularioPerfil extends StatefulWidget {
   final Usuario usuario;
@@ -10,7 +12,7 @@ class FormularioPerfil extends StatefulWidget {
 
   const FormularioPerfil({
     super.key,
-    required this.usuario, 
+    required this.usuario,
     required this.alActualizarPerfil,
     required this.cargando,
     this.error,
@@ -40,42 +42,21 @@ class _FormularioPerfilState extends State<FormularioPerfil> {
 
   void _enviarFormulario() {
     if (_formKey.currentState!.validate()) {
-      //  Crear Perfil a partir del Usuario
       final perfil = Perfil(
         usuarioId: widget.usuario.id,
         nombre: _controladorNombre.text.trim(),
         telefono: _controladorTelefono.text.trim(),
         correo: _controladorCorreo.text.trim(),
-        tipoUsuario: 'cliente',
+        tipoUsuario: widget.usuario.tipoUsuario,
       );
       
       widget.alActualizarPerfil(perfil);
     }
   }
 
-  String? _validarNombre(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'El nombre es requerido';
-    }
-    return null;
-  }
-
-  String? _validarCorreo(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'El correo es requerido';
-    }
-    
-    final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!regex.hasMatch(value)) {
-      return 'Ingrese un correo electrónico válido';
-    }
-    
-    return null;
-  }
-
   String? _validarTelefono(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'El teléfono es requerido';
+    if (value == null || value.trim().isEmpty) {
+      return 'El teléfono es requerido.';
     }
     return null;
   }
@@ -86,7 +67,6 @@ class _FormularioPerfilState extends State<FormularioPerfil> {
       key: _formKey,
       child: Column(
         children: [
-          // Campo de nombre
           TextFormField(
             controller: _controladorNombre,
             decoration: const InputDecoration(
@@ -94,12 +74,9 @@ class _FormularioPerfilState extends State<FormularioPerfil> {
               prefixIcon: Icon(Icons.person),
               border: OutlineInputBorder(),
             ),
-            validator: _validarNombre,
+            validator: Validadores.validarNombre,
           ),
-          
           const SizedBox(height: 16),
-          
-          // Campo de correo
           TextFormField(
             controller: _controladorCorreo,
             decoration: const InputDecoration(
@@ -108,12 +85,9 @@ class _FormularioPerfilState extends State<FormularioPerfil> {
               border: OutlineInputBorder(),
             ),
             keyboardType: TextInputType.emailAddress,
-            validator: _validarCorreo,
+            validator: Validadores.validarCorreo,
           ),
-          
           const SizedBox(height: 16),
-          
-          // Campo de teléfono
           TextFormField(
             controller: _controladorTelefono,
             decoration: const InputDecoration(
@@ -124,46 +98,23 @@ class _FormularioPerfilState extends State<FormularioPerfil> {
             keyboardType: TextInputType.phone,
             validator: _validarTelefono,
           ),
-          
           const SizedBox(height: 24),
-          
-          // Mostrar error
           if (widget.error != null)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.red[50],
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red),
-              ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
               child: Text(
                 widget.error!,
                 style: const TextStyle(color: Colors.red),
               ),
             ),
-          
-          if (widget.error != null) const SizedBox(height: 16),
-          
-          // Botón de guardar
           SizedBox(
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
               onPressed: widget.cargando ? null : _enviarFormulario,
               child: widget.cargando
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : const Text(
-                      'GUARDAR CAMBIOS',
-                      style: TextStyle(fontSize: 16),
-                    ),
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text('GUARDAR CAMBIOS'),
             ),
           ),
         ],

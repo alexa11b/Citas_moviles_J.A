@@ -102,7 +102,6 @@ class _PaginaAgregarHorarioState extends State<PaginaAgregarHorario> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    // Selector de Día
                     DropdownButtonFormField<String>(
                       initialValue: _diaSeleccionado,
                       decoration: const InputDecoration(
@@ -130,7 +129,6 @@ class _PaginaAgregarHorarioState extends State<PaginaAgregarHorario> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Selector Hora Inicio
                     ListTile(
                       title: const Text('Hora de inicio'),
                       subtitle: Text(_horaInicio.format(context)),
@@ -140,7 +138,6 @@ class _PaginaAgregarHorarioState extends State<PaginaAgregarHorario> {
                     ),
                     const SizedBox(height: 10),
 
-                    // Selector Hora Fin
                     ListTile(
                       title: const Text('Hora de fin'),
                       subtitle: Text(_horaFin.format(context)),
@@ -150,7 +147,6 @@ class _PaginaAgregarHorarioState extends State<PaginaAgregarHorario> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Resumen del horario
                     Card(
                       child: Padding(
                         padding: const EdgeInsets.all(16),
@@ -178,7 +174,6 @@ class _PaginaAgregarHorarioState extends State<PaginaAgregarHorario> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Mostrar error si existe
                     if (viewModel.error != null)
                       Container(
                         width: double.infinity,
@@ -195,7 +190,6 @@ class _PaginaAgregarHorarioState extends State<PaginaAgregarHorario> {
                       ),
                     if (viewModel.error != null) const SizedBox(height: 16),
 
-                    // Botón Agregar
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -214,10 +208,8 @@ class _PaginaAgregarHorarioState extends State<PaginaAgregarHorario> {
 
                     const SizedBox(height: 20),
 
-                    // Botón para ver horarios existentes
                     OutlinedButton(
                       onPressed: () {
-                        // Navegar a página de horarios del proveedor
                       },
                       child: const Text('VER MIS HORARIOS CONFIGURADOS'),
                     ),

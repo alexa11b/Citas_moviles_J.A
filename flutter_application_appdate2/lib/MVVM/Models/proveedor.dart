@@ -41,7 +41,6 @@ class Proveedor extends Usuario {
           pasword: pasword,
         );
 
-  // Constructor desde Map
   factory Proveedor.desdeMap(Map<String, dynamic> mapa) {
     return Proveedor(
       id: mapa['id'] ?? '',
@@ -64,7 +63,6 @@ class Proveedor extends Usuario {
     );
   }
 
-  // Convertir a Map
   @override
   Map<String, dynamic> toMap() {
     final mapa = super.toMap();
@@ -85,7 +83,6 @@ class Proveedor extends Usuario {
     return mapa;
   }
 
-  // Getters útiles
   String get nombreDisplay => nombreNegocio ?? nombre;
   String get telefonoDisplay => telefonoNegocio ?? telefono;
   
@@ -98,12 +95,10 @@ class Proveedor extends Usuario {
 
 
   void actualizarCalificacion(double nuevaCalificacion) {
-    // Si es la primera calificación
     if (totalCalificaciones == null || totalCalificaciones == 0) {
       calificacion = nuevaCalificacion;
       totalCalificaciones = 1;
     } else {
-      // Calcular nuevo promedio
       final nuevoTotal = totalCalificaciones! + 1;
       final sumaActual = calificacion! * totalCalificaciones!;
       calificacion = (sumaActual + nuevaCalificacion) / nuevoTotal;

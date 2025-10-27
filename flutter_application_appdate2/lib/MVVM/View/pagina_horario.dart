@@ -11,7 +11,6 @@ class PaginaHorario extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Encabezado con mes
           Padding(
             padding: EdgeInsets.all(16),
             child: Text(
@@ -20,7 +19,6 @@ class PaginaHorario extends StatelessWidget {
             ),
           ),
           
-          // Calendario semanal simple
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -45,7 +43,6 @@ class PaginaHorario extends StatelessWidget {
             ),
           ),
           
-          // Configuración de horarios
           Expanded(
             child: ListView(
               padding: EdgeInsets.all(16),
@@ -83,7 +80,6 @@ class _ItemHorario extends StatelessWidget {
         subtitle: Text(horario),
         trailing: Icon(Icons.edit),
         onTap: () {
-          // Editar horario
         },
       ),
     );

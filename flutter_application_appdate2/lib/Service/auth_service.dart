@@ -2,124 +2,100 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_appdate2/MVVM/Models/usuario.dart';
 
 class AuthService with ChangeNotifier {
-  // inicializar la lista para que nunca sea null
-  final List<Usuario> usuarios = [];
-  Usuario? usuarioActual;
+  final List<Usuario> _usuarios = []; 
+  Usuario? _usuarioActual;
   bool _cargando = false;
 
   bool get cargando => _cargando;
+  List<Usuario> get usuarios => _usuarios; 
+  Usuario? get usuarioActual => _usuarioActual;
 
   AuthService() {
     _agregarUsuariosPrueba();
-    debugPrint('AuthService initialized with ${usuarios.length} users');
+    debugPrint('AuthService initialized with ${_usuarios.length} users');
   }
 
   void _agregarUsuariosPrueba() {
-    // limpiar y agregar con addAll para evitar reasignaciones que puedan causar problemas
-    usuarios.clear();
-    usuarios.addAll([
+    _usuarios.clear();
+    _usuarios.addAll([
+      // Usuario Administrador
       Usuario(
-        id: '1',
-        nombre: 'Cliente Test',
-        correo: 'cliente@test.com',
-        telefono: '6863940971',
-        tipoUsuario: 'cliente',
-        pasword: '123456',
-      ),
-      Usuario(
-        id: '2',
-        nombre: 'Proveedor Test',
-        correo: 'proveedor@test.com',
-        telefono: '6861234567',
-        tipoUsuario: 'proveedor',
-        pasword: '123456',
-      ),
-      Usuario(
-        id: '3',
-        nombre: 'Admin Test',
-        correo: 'admin@test.com',
-        telefono: '6860000000',
+        id: 'admin01',
+        nombre: 'Boga',
+        correo: 'boga@admin.com',
+        telefono: '6861112233',
         tipoUsuario: 'admin',
-        pasword: '123456',
+        pasword: 'AdminBoga123',
+      ),
+      // Usuario Proveedor
+      Usuario(
+        id: 'prov01',
+        nombre: 'Ale',
+        correo: 'ale@proveedor.com',
+        telefono: '6864445566',
+        tipoUsuario: 'proveedor',
+        pasword: 'ProveedorAle456',
+      ),
+      // Usuario Cliente 1
+      Usuario(
+        id: 'cli01',
+        nombre: 'Jose Trejo',
+        correo: 'jose.trejo@cliente.com',
+        telefono: '6867778899',
+        tipoUsuario: 'cliente',
+        pasword: 'ClienteJose789',
+      ),
+      // Usuario Cliente 2
+      Usuario(
+        id: 'cli02',
+        nombre: 'Hectorin Bajin',
+        correo: 'hectorin.bajin@cliente.com',
+        telefono: '6861234567',
+        tipoUsuario: 'cliente',
+        pasword: 'ClienteHector01',
       ),
     ]);
-    debugPrint('Test users added: ${usuarios.map((u) => u.correo).toList()}');
-    notifyListeners();
+    debugPrint('Usuarios de prueba actualizados: ${_usuarios.length}');
   }
+
 
   Future<Usuario> login(String correo, String contrasena) async {
-    _cargando = true;
-    notifyListeners();
-
-    await Future.delayed(const Duration(milliseconds: 500)); // menor delay para pruebas
-
-    try {
-      debugPrint('Attempting login for: $correo');
-      debugPrint('Available users: ${usuarios.map((u) => u.correo).toList()}');
-
-      if (usuarios.isEmpty) {
-        throw Exception('No hay usuarios registrados');
-      }
-
-      final buscado = correo.trim().toLowerCase();
-      final usuario = usuarios.firstWhere(
-        (u) => u.correo.trim().toLowerCase() == buscado,
-        orElse: () => throw Exception('Usuario no encontrado'),
-      );
-
-
-      if (usuario.pasword != contrasena) {
-        throw Exception('Contraseña incorrecta');
-      }
-
-      usuarioActual = usuario;
-      notifyListeners();
-      return usuario;
-    } catch (e) {
-      final mensaje = e.toString().replaceAll('Exception: ', '');
-      throw Exception(mensaje);
-    } finally {
-      _cargando = false;
-      notifyListeners();
-    }
-  }
-
-  Future<Usuario> registrar(Usuario usuario, String contrasena) async {
     _cargando = true;
     notifyListeners();
 
     await Future.delayed(const Duration(milliseconds: 500));
 
     try {
-      final correoNuevo = usuario.correo.trim().toLowerCase();
-      if (usuarios.any((u) => u.correo.trim().toLowerCase() == correoNuevo)) {
-        throw Exception('El correo ya está registrado');
+      if (_usuarios.isEmpty) {
+        throw Exception('No hay usuarios registrados');
       }
 
-      final nuevoUsuario = Usuario(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        nombre: usuario.nombre,
-        correo: usuario.correo,
-        telefono: usuario.telefono,
-        tipoUsuario: 'cliente',
-        pasword: contrasena,
+      final buscado = correo.trim().toLowerCase();
+      final usuario = _usuarios.firstWhere(
+        (u) => u.correo.trim().toLowerCase() == buscado,
+        orElse: () => throw Exception('Usuario no encontrado'),
       );
 
-      usuarios.add(nuevoUsuario);
-      usuarioActual = nuevoUsuario;
-      notifyListeners();
-      return nuevoUsuario;
+      if (usuario.pasword != contrasena) {
+        throw Exception('Contraseña incorrecta');
+      }
+
+      _usuarioActual = usuario;
+      return usuario;
     } catch (e) {
-      final mensaje = e.toString().replaceAll('Exception: ', '');
-      throw Exception(mensaje);
+      throw Exception(e.toString().replaceAll('Exception: ', ''));
     } finally {
       _cargando = false;
       notifyListeners();
     }
   }
+  
+  Future<Usuario> registrar(Usuario usuario, String contrasena) async {
+    return usuario; 
+  }
 
   void cerrarSesion() {
-    usuarioActual = null;
+    _usuarioActual = null;
     notifyListeners();
   }
 }

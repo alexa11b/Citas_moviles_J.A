@@ -1,9 +1,9 @@
 class Horario {
   final String id;
   final String proveedorId;
-  final String diaSemana; // 'Lunes', 'Martes', etc.
-  final String horaInicio; // formato 'HH:mm'
-  final String horaFin; // formato 'HH:mm'
+  final String diaSemana;
+  final String horaInicio;
+  final String horaFin;
   final bool activo;
 
   Horario({

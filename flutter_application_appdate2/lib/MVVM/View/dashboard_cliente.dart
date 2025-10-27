@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_application_appdate2/Service/auth_service.dart';
 import 'package:flutter_application_appdate2/MVVM/Models/usuario.dart';
 import 'package:flutter_application_appdate2/MVVM/View/pagina_servicios.dart';
-import 'package:flutter_application_appdate2/MVVM/View/pagina_horario.dart';
 import 'package:flutter_application_appdate2/MVVM/View/pagina_perfil.dart';
 
 class DashboardCliente extends StatelessWidget {
@@ -21,9 +20,7 @@ class DashboardCliente extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {
-              authService.cerrarSesion();
-            },
+            onPressed: () => authService.cerrarSesion(),
           ),
         ],
       ),
@@ -41,30 +38,14 @@ class DashboardCliente extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.home),
               title: const Text('Inicio'),
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: () => Navigator.pop(context),
             ),
             ListTile(
               leading: const Icon(Icons.work),
-              title: const Text('Servicios'),
+              title: const Text('Buscar Servicios'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PaginaServicios()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.schedule),
-              title: const Text('Horarios'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PaginaHorario()),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const PaginaServicios()));
               },
             ),
             ListTile(
@@ -72,19 +53,14 @@ class DashboardCliente extends StatelessWidget {
               title: const Text('Mi Perfil'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PaginaPerfil()),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const PaginaPerfil()));
               },
             ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Cerrar Sesión'),
-              onTap: () {
-                authService.cerrarSesion();
-              },
+              onTap: () => authService.cerrarSesion(),
             ),
           ],
         ),
@@ -96,36 +72,23 @@ class DashboardCliente extends StatelessWidget {
             const Icon(Icons.person, size: 80, color: Colors.blue),
             const SizedBox(height: 20),
             Text(
-              '¡Bienvenido ${usuario.nombre}!',
+              '¡Bienvenido, ${usuario.nombre}!',
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             const Text(
-              'Cliente - Puedes ver servicios y horarios',
+              '¿Listo para agendar tu próxima cita?',
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PaginaServicios()),
-                );
-              },
-              child: const Text('Ver Servicios Disponibles'),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PaginaHorario()),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const PaginaServicios()));
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
-              child: const Text('Ver Horarios de Servicios'),
+              child: const Text('Ver Servicios Disponibles'),
             ),
           ],
         ),

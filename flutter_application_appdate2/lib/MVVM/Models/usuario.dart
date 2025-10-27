@@ -3,15 +3,16 @@ class Usuario {
   final String nombre;
   final String correo;
   final String telefono;
-  final String tipoUsuario; // 'cliente', 'proveedor', 'admin'
+  final String tipoUsuario;
+  final String pasword;
   
   Usuario({
     required this.id,
     required this.nombre,
     required this.correo,
     required this.telefono,
-    required this.tipoUsuario, 
-    required String pasword,
+    required this.tipoUsuario,
+    required this.pasword,
   });
   
   factory Usuario.desdeMap(Map<String, dynamic> mapa) {
@@ -39,7 +40,6 @@ class Usuario {
   bool get esProveedor => tipoUsuario == 'proveedor';
   bool get esAdmin => tipoUsuario == 'admin';
 
-  get pasword => null;
 
   @override
   String toString() {

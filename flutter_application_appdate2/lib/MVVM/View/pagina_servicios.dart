@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_appdate2/MVVM/View_Models/tarjeta_servicio.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_appdate2/Service/auth_service.dart';
-import 'package:flutter_application_appdate2/Service/servicios_service.dart';
-import 'package:flutter_application_appdate2/MVVM/view_models/servicios_view_model.dart';
+import 'package:flutter_application_appdate2/MVVM/View_Models/servicios_view_model.dart';
 
 class PaginaServicios extends StatefulWidget {
   final bool esProveedor;
@@ -36,20 +35,25 @@ class _PaginaServiciosState extends State<PaginaServicios> {
   void _eliminarServicio(BuildContext context, String servicioId) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Eliminar Servicio'),
-          content: const Text('¿Estás seguro de que quieres eliminar este servicio?'),
+          title: const Text('Confirmar Eliminación'),
+          content: const Text('¿Estás seguro de que quieres eliminar este servicio? Esta acción no se puede deshacer.'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(dialogContext),
               child: const Text('Cancelar'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
                 final viewModel = Provider.of<ServiciosViewModel>(context, listen: false);
-                viewModel.eliminarServicio(servicioId);
+                final proveedorId = Provider.of<AuthService>(context, listen: false).usuarioActual!.id;
+                
+                viewModel.eliminarServicio(servicioId).then((_) {
+                  // Después de eliminar, recargamos la lista de servicios del proveedor.
+                  viewModel.cargarServiciosProveedor(proveedorId);
+                });
               },
               child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
             ),
@@ -61,108 +65,40 @@ class _PaginaServiciosState extends State<PaginaServicios> {
 
   @override
   Widget build(BuildContext context) {
-    final authService = Provider.of<AuthService>(context, listen: false);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.esProveedor ? 'Mis Servicios' : 'Servicios Disponibles'),
+      ),
+      body: Consumer<ServiciosViewModel>(
+        builder: (context, viewModel, child) {
+          if (viewModel.cargando) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-    return ChangeNotifierProvider(
-      create: (context) => ServiciosViewModel(ServiciosService()),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(widget.esProveedor ? 'Mis Servicios' : 'Servicios Disponibles'),
-          actions: widget.esProveedor
-              ? [
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: () {
-                      // Navegar a agregar servicio
-                    },
-                  ),
-                ]
-              : null,
-        ),
-        body: Consumer<ServiciosViewModel>(
-          builder: (context, viewModel, child) {
-            if (viewModel.cargando) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (viewModel.servicios.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      widget.esProveedor ? Icons.work_off : Icons.work_outline,
-                      size: 64,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      widget.esProveedor 
-                          ? 'No tienes servicios registrados'
-                          : 'No hay servicios disponibles',
-                      style: const TextStyle(fontSize: 18, color: Colors.grey),
-                    ),
-                    if (widget.esProveedor) ...[
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Navegar a agregar servicio
-                        },
-                        child: const Text('Agregar Primer Servicio'),
-                      ),
-                    ],
-                  ],
-                ),
-              );
-            }
-
-            return Column(
-              children: [
-                // Barra de búsqueda
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: widget.esProveedor ? 'Buscar mis servicios...' : 'Buscar servicios...',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      // Implementar búsqueda
-                    },
-                  ),
-                ),
-
-                // Lista de servicios
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: viewModel.servicios.length,
-                    itemBuilder: (context, index) {
-                      final servicio = viewModel.servicios[index];
-                      return TarjetaServicio(
-                        servicio: servicio,
-                        esProveedor: widget.esProveedor,
-                        onEliminar: widget.esProveedor
-                            ? () => _eliminarServicio(context, servicio.id)
-                            : null,
-                      );
-                    },
-                  ),
-                ),
-              ],
+          if (viewModel.servicios.isEmpty) {
+            return Center(
+              child: Text(
+                widget.esProveedor 
+                    ? 'No tienes servicios registrados'
+                    : 'No hay servicios disponibles por ahora',
+              ),
             );
-          },
-        ),
-        floatingActionButton: widget.esProveedor
-            ? FloatingActionButton(
-                onPressed: () {
-                  // Navegar a agregar servicio
-                },
-                child: const Icon(Icons.add),
-              )
-            : null,
+          }
+
+          return ListView.builder(
+            itemCount: viewModel.servicios.length,
+            itemBuilder: (context, index) {
+              final servicio = viewModel.servicios[index];
+              return TarjetaServicio(
+                servicio: servicio,
+                esProveedor: widget.esProveedor,
+                onEliminar: widget.esProveedor
+                    ? () => _eliminarServicio(context, servicio.id)
+                    : null,
+              );
+            },
+          );
+        },
       ),
     );
   }

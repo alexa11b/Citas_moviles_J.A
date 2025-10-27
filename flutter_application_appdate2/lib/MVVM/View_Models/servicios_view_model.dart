@@ -51,8 +51,8 @@ class ServiciosViewModel with ChangeNotifier {
     notifyListeners();
 
     try {
-      await _serviciosService.agregarServicio(servicio);
-      await cargarServiciosProveedor(servicio.proveedorId);
+      final nuevoServicio = await _serviciosService.agregarServicio(servicio);
+      await cargarServiciosProveedor(nuevoServicio.proveedorId);
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -68,7 +68,6 @@ class ServiciosViewModel with ChangeNotifier {
 
     try {
       await _serviciosService.eliminarServicio(servicioId);
-      await cargarServicios();
     } catch (e) {
       _error = e.toString();
     } finally {
