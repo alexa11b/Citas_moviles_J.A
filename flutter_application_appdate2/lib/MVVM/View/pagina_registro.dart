@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_appdate2/MVVM/widgets/formulario_registro.dart';
+import 'package:flutter_application_appdate2/MVVM/View_Models/formulario_registro.dart';
 import 'package:flutter_application_appdate2/Service/auth_service.dart';
 import 'package:provider/provider.dart';
 import '../view_models/registro_view_model.dart';

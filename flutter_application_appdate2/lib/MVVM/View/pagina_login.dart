@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_appdate2/MVVM/View/pagina_inicio.dart';
 import 'package:flutter_application_appdate2/MVVM/View_Models/login_view_model.dart';
-import 'package:flutter_application_appdate2/MVVM/Widgets/formulario_login.dart';
 import 'package:flutter_application_appdate2/Service/auth_service.dart';
 import 'package:provider/provider.dart';
 import 'pagina_registro.dart';
 import 'pagina_recuperar.dart';
+import 'package:flutter_application_appdate2/MVVM/View_Models/formulario_login.dart';
+
 
 class PaginaLogin extends StatelessWidget {
   const PaginaLogin({super.key});
@@ -29,7 +30,7 @@ class PaginaLogin extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) {
         final authService = AuthService();
-        authService.agregarUsuarioPrueba();
+        // ✅ authService ya llama _agregarUsuariosPrueba() en su constructor
         return LoginViewModel(authService);
       },
       child: Scaffold(
@@ -84,10 +85,9 @@ class PaginaLogin extends StatelessWidget {
                           ),
                         );
                         
-                        // ✅ NAVEGACIÓN A LA PÁGINA DE INICIO
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => PaginaInicio()),
+                          MaterialPageRoute(builder: (context) => const PaginaInicio()),
                         );
                       });
                     }

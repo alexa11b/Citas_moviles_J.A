@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_appdate2/MVVM/Models/usuario.dart';
+import 'package:flutter_application_appdate2/MVVM/View_Models/formulario_perfil.dart';
 import 'package:flutter_application_appdate2/Service/auth_service.dart';
 import 'package:flutter_application_appdate2/Service/perfil_service.dart';
 import 'package:provider/provider.dart';
 import '../view_models/perfil_view_model.dart';
-import '../widgets/formulario_perfil.dart';
 
 class PaginaPerfil extends StatelessWidget {
   const PaginaPerfil({super.key});

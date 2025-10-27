@@ -30,6 +30,21 @@ class ServiciosViewModel with ChangeNotifier {
     }
   }
 
+  Future<void> cargarServiciosProveedor(String proveedorId) async {
+    _cargando = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _servicios = await _serviciosService.obtenerServiciosPorProveedor(proveedorId);
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _cargando = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> agregarServicio(Servicio servicio) async {
     _cargando = true;
     _error = null;
@@ -37,7 +52,23 @@ class ServiciosViewModel with ChangeNotifier {
 
     try {
       await _serviciosService.agregarServicio(servicio);
-      await cargarServicios(); // Recargar lista
+      await cargarServiciosProveedor(servicio.proveedorId);
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _cargando = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> eliminarServicio(String servicioId) async {
+    _cargando = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _serviciosService.eliminarServicio(servicioId);
+      await cargarServicios();
     } catch (e) {
       _error = e.toString();
     } finally {

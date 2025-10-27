@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class FormularioLogin extends StatefulWidget {
-  final Function(String, String) alIniciarSesion;
+  final Future<bool> Function(String, String) alIniciarSesion;
   final bool cargando;
   final String? error;
 
@@ -28,18 +28,25 @@ class _FormularioLoginState extends State<FormularioLogin> {
     super.dispose();
   }
 
-  void _enviarFormulario() {
+  Future<void> _enviarFormulario() async {
     if (_formKey.currentState!.validate()) {
-      widget.alIniciarSesion(
-        _controladorCorreo.text.trim(),
-        _controladorContrasena.text,
-      );
+      final correo = _controladorCorreo.text.trim();
+      final pass = _controladorContrasena.text;
+      final success = await widget.alIniciarSesion(correo, pass);
+      if (!success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(widget.error ?? 'Error al iniciar sesión')),
+        );
+      }
     }
   }
 
   String? _validarCorreo(String? value) {
     if (value == null || value.isEmpty) {
-      return 'El correo es requerido';
+      return 'El correo electrónico es requerido';
+    }
+    if (!value.contains('@')) {
+      return 'Introduce un correo válido';
     }
     return null;
   }
@@ -47,6 +54,9 @@ class _FormularioLoginState extends State<FormularioLogin> {
   String? _validarContrasena(String? value) {
     if (value == null || value.isEmpty) {
       return 'La contraseña es requerida';
+    }
+    if (value.length < 4) {
+      return 'La contraseña es muy corta';
     }
     return null;
   }
@@ -57,23 +67,20 @@ class _FormularioLoginState extends State<FormularioLogin> {
       key: _formKey,
       child: Column(
         children: [
-          // Campo de correo
           TextFormField(
             controller: _controladorCorreo,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Correo electrónico',
               prefixIcon: Icon(Icons.email),
               border: OutlineInputBorder(),
             ),
             validator: _validarCorreo,
+            keyboardType: TextInputType.emailAddress,
           ),
-          
-          SizedBox(height: 16),
-          
-          // Campo de contraseña
+          const SizedBox(height: 16),
           TextFormField(
             controller: _controladorContrasena,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Contraseña',
               prefixIcon: Icon(Icons.lock),
               border: OutlineInputBorder(),
@@ -81,32 +88,37 @@ class _FormularioLoginState extends State<FormularioLogin> {
             obscureText: true,
             validator: _validarContrasena,
           ),
-          
-          SizedBox(height: 24),
-          
-          // Mostrar error
+          const SizedBox(height: 24),
           if (widget.error != null)
             Container(
-              padding: EdgeInsets.all(12),
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red[50],
-                borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.red),
+                borderRadius: BorderRadius.circular(4),
+                color: Colors.red.withOpacity(0.05),
               ),
-              child: Text(widget.error!),
+              child: Text(
+                widget.error!,
+                style: const TextStyle(color: Colors.red),
+              ),
             ),
-          
-          if (widget.error != null) SizedBox(height: 16),
-          
-          // Botón
+          if (widget.error != null) const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
               onPressed: widget.cargando ? null : _enviarFormulario,
               child: widget.cargando
-                  ? CircularProgressIndicator()
-                  : Text('INICIAR SESIÓN'),
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : const Text('Iniciar sesión'),
             ),
           ),
         ],

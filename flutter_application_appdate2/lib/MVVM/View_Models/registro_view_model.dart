@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_appdate2/MVVM/Models/usuario.dart';
-import 'package:flutter_application_appdate2/Service/auth_service.dart';
+import '../Models/usuario.dart';
+import '../../Service/auth_service.dart';
 
 class RegistroViewModel with ChangeNotifier {
   final AuthService _authService;
@@ -26,6 +26,8 @@ class RegistroViewModel with ChangeNotifier {
         nombre: nombre,
         correo: correo,
         telefono: telefono,
+        tipoUsuario: 'cliente', 
+        pasword: '', 
       );
       
       _usuario = await _authService.registrar(nuevoUsuario, contrasena);
@@ -35,5 +37,10 @@ class RegistroViewModel with ChangeNotifier {
       _cargando = false;
       notifyListeners();
     }
+  }
+
+  void limpiarError() {
+    _error = null;
+    notifyListeners();
   }
 }

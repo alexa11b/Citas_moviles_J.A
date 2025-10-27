@@ -1,37 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_appdate2/MVVM/View/pagina_inicio.dart';
-import 'package:flutter_application_appdate2/MVVM/View/pagina_login.dart';
-import 'package:flutter_application_appdate2/Service/auth_service.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_application_appdate2/Service/auth_service.dart';
+import 'package:flutter_application_appdate2/MVVM/View_Models/login_view_model.dart';
+import 'app.dart';
 
 void main() {
+  // Create AuthService instance first
+  final authService = AuthService();
+  
   runApp(
-    ChangeNotifierProvider(
-      create: (context) {
-        final authService = AuthService();
-        authService.agregarUsuarioPrueba();
-        return authService;
-      },
+    MultiProvider(
+      providers: [
+        // Provide the instance, not create a new one
+        ChangeNotifierProvider.value(value: authService),
+        ChangeNotifierProvider(
+          create: (_) => LoginViewModel(authService),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final authService = Provider.of<AuthService>(context, listen: true);
-
-    return MaterialApp(
-      title: 'Citas Multi-Servicios',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: authService.usuarioActual != null ? const PaginaInicio() : const PaginaLogin(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
 }
