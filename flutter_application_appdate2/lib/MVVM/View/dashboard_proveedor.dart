@@ -5,6 +5,8 @@ import 'package:flutter_application_appdate2/MVVM/Models/usuario.dart';
 import 'package:flutter_application_appdate2/MVVM/View/pagina_servicios.dart';
 import 'package:flutter_application_appdate2/MVVM/View/agregar_servicio.dart';
 import 'package:flutter_application_appdate2/MVVM/View/pagina_perfil.dart';
+import 'package:flutter_application_appdate2/MVVM/View/agregar_horario.dart';
+import 'package:flutter_application_appdate2/MVVM/View/pagina_horario.dart';
 
 class DashboardProveedor extends StatelessWidget {
   final Usuario usuario;
@@ -45,6 +47,12 @@ class DashboardProveedor extends StatelessWidget {
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 10),
+            const Text(
+              'Panel de Control - Proveedor',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 40),
             _buildActionButton(
               context: context,
@@ -62,6 +70,26 @@ class DashboardProveedor extends StatelessWidget {
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const PaginaServicios(esProveedor: true)));
               },
+            ),
+            const SizedBox(height: 12),
+            // -- BOTONES DE HORARIOS RESTAURADOS --
+            _buildActionButton(
+              context: context,
+              icon: Icons.schedule,
+              label: 'Configurar Horarios',
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const PaginaAgregarHorario()));
+              },
+            ),
+            const SizedBox(height: 12),
+            _buildActionButton(
+              context: context,
+              icon: Icons.access_time,
+              label: 'Ver Mis Horarios',
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const PaginaHorario()));
+              },
+              isSecondary: true,
             ),
           ],
         ),
@@ -89,6 +117,24 @@ class DashboardProveedor extends StatelessWidget {
             onTap: () => Navigator.pop(context),
           ),
           const Divider(),
+          // -- OPCIONES DE HORARIOS RESTAURADAS EN EL MENÚ --
+          ListTile(
+            leading: const Icon(Icons.add_business, color: Colors.green),
+            title: const Text('Agregar Servicio'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const PaginaAgregarServicio()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.schedule, color: Colors.purple),
+            title: const Text('Configurar Horario'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const PaginaAgregarHorario()));
+            },
+          ),
+          const Divider(),
           ListTile(
             leading: const Icon(Icons.person),
             title: const Text('Mi Perfil'),
@@ -112,6 +158,7 @@ class DashboardProveedor extends StatelessWidget {
     required IconData icon,
     required String label,
     required VoidCallback onPressed,
+    bool isSecondary = false,
   }) {
     return SizedBox(
       width: double.infinity,
@@ -120,8 +167,8 @@ class DashboardProveedor extends StatelessWidget {
         label: Text(label),
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
+          backgroundColor: isSecondary ? Colors.grey[200] : Colors.blue,
+          foregroundColor: isSecondary ? Colors.blue : Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
