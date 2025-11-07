@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_appdate2/MVVM/Models/servicio.dart';
+//import 'package:flutter_application_appdate2/MVVM/Models/horario.dart';
+import 'package:flutter_application_appdate2/Service/auth_service.dart';
 import 'package:flutter_application_appdate2/Service/horario_service.dart';
+import 'package:flutter_application_appdate2/MVVM/View_Models/citas_view_model.dart';
 import 'package:flutter_application_appdate2/MVVM/View_Models/horario_view_model.dart';
 
 class PaginaDetalleServicio extends StatelessWidget {
@@ -48,16 +51,54 @@ class PaginaDetalleServicio extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-
               const Text('Horarios Disponibles del Proveedor', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
-              _buildListaHorarios(), 
-              
+              _buildListaHorarios(),
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () { },
+                  onPressed: () async {
+                    final authService = context.read<AuthService>();
+                    final cliente = authService.usuarioActual;
+
+                    if (cliente == null) return;
+
+                    final DateTime? fechaSeleccionada = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(const Duration(days: 90)),
+                    );
+
+                    if (fechaSeleccionada == null || !context.mounted) return;
+
+                    final TimeOfDay? horaSeleccionada = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+
+                    if (horaSeleccionada == null || !context.mounted) return;
+
+                    final citasViewModel = context.read<CitasViewModel>();
+                    final exito = await citasViewModel.agendarNuevaCita(
+                      servicio: servicio,
+                      cliente: cliente,
+                      fecha: fechaSeleccionada,
+                      hora: horaSeleccionada,
+                    );
+
+                    if (exito && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('¡Cita agendada con éxito!'), backgroundColor: Colors.green),
+                      );
+                      Navigator.pop(context);
+                    } else if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error al agendar: ${citasViewModel.error}'), backgroundColor: Colors.red),
+                      );
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     foregroundColor: Colors.white,

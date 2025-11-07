@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_appdate2/Service/auth_service.dart';
 import 'package:flutter_application_appdate2/MVVM/Models/usuario.dart';
+import 'package:flutter_application_appdate2/MVVM/View/pagina_citas.dart';
 import 'package:flutter_application_appdate2/MVVM/View/pagina_servicios.dart';
 import 'package:flutter_application_appdate2/MVVM/View/pagina_perfil.dart';
 
@@ -46,6 +47,14 @@ class DashboardCliente extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const PaginaServicios()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.calendar_today, color: Colors.blue),
+              title: const Text('Mis Citas'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const PaginaCitas()));
               },
             ),
             ListTile(

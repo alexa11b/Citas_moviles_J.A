@@ -34,7 +34,7 @@ class AuthService with ChangeNotifier {
         correo: 'ale@proveedor.com',
         telefono: '6864445566',
         tipoUsuario: 'proveedor',
-        pasword: 'ProveedorAle456',
+        pasword: 'AleP1234',
       ),
       // Usuario Cliente 1
       Usuario(

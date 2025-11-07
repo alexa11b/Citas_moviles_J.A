@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_appdate2/Service/auth_service.dart';
 import 'package:flutter_application_appdate2/MVVM/Models/usuario.dart';
+import 'package:flutter_application_appdate2/MVVM/View/pagina_citas.dart';
 import 'package:flutter_application_appdate2/MVVM/View/pagina_servicios.dart';
 import 'package:flutter_application_appdate2/MVVM/View/agregar_servicio.dart';
 import 'package:flutter_application_appdate2/MVVM/View/pagina_perfil.dart';
 import 'package:flutter_application_appdate2/MVVM/View/agregar_horario.dart';
-import 'package:flutter_application_appdate2/MVVM/View/pagina_horario.dart';
+//import 'package:flutter_application_appdate2/MVVM/View/pagina_horario.dart';
 
 class DashboardProveedor extends StatelessWidget {
   final Usuario usuario;
@@ -54,6 +55,15 @@ class DashboardProveedor extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
+             _buildActionButton(
+              context: context,
+              icon: Icons.calendar_today,
+              label: 'Ver Agenda de Citas',
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const PaginaCitas()));
+              },
+            ),
+            const SizedBox(height: 12),
             _buildActionButton(
               context: context,
               icon: Icons.add_business,
@@ -72,22 +82,12 @@ class DashboardProveedor extends StatelessWidget {
               },
             ),
             const SizedBox(height: 12),
-            // -- BOTONES DE HORARIOS RESTAURADOS --
             _buildActionButton(
               context: context,
               icon: Icons.schedule,
               label: 'Configurar Horarios',
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const PaginaAgregarHorario()));
-              },
-            ),
-            const SizedBox(height: 12),
-            _buildActionButton(
-              context: context,
-              icon: Icons.access_time,
-              label: 'Ver Mis Horarios',
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const PaginaHorario()));
               },
               isSecondary: true,
             ),
@@ -116,8 +116,15 @@ class DashboardProveedor extends StatelessWidget {
             title: const Text('Dashboard'),
             onTap: () => Navigator.pop(context),
           ),
+          ListTile(
+            leading: const Icon(Icons.calendar_today, color: Colors.blue),
+            title: const Text('Agenda de Citas'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const PaginaCitas()));
+            },
+          ),
           const Divider(),
-          // -- OPCIONES DE HORARIOS RESTAURADAS EN EL MENÚ --
           ListTile(
             leading: const Icon(Icons.add_business, color: Colors.green),
             title: const Text('Agregar Servicio'),
